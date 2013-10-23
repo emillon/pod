@@ -1,4 +1,13 @@
 {% extends "base.html" %}
 {% block content %}
-New feed.
+<form method="post">
+    {{form.hidden_tag()}}
+    <p>
+        <label>
+            Podcast URL
+            {{form.podcast_url()}}
+        </label>
+    </p>
+    <p><input type="submit" value="Add"></p>
+</form>
 {% endblock %}
