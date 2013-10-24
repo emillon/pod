@@ -1,2 +1,4 @@
+feedparser
 flask
+flask-rq
 flask-wtf

@@ -2,6 +2,7 @@ import os
 from random import choice
 from string import ascii_uppercase, digits
 from flask import Flask
+from flask.ext.rq import RQ
 
 def generate_key(n):
     return ''.join(choice(ascii_uppercase + digits) for x in range(n))
@@ -22,5 +23,6 @@ def get_secret_key(app):
 app = Flask(__name__)
 app.config.from_object('config')
 app.config['SECRET_KEY'] = get_secret_key(app)
+RQ(app)
 
 from app import views
