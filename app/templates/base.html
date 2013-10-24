@@ -6,6 +6,11 @@
       href="{{url_for('static', filename='vendor/bootstrap-3.0.0/css/bootstrap.min.css')}}">
 </head>
 <body>
+{% with messages = get_flashed_messages() %}
+{% for message in messages %}
+    <p class="text-warning">{{ message }}</p>
+{% endfor %}
+{% endwith %}
 {% block content %}{% endblock %}
 </body>
 </html>
