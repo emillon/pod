@@ -5,6 +5,7 @@ from flask import Flask
 from flask.ext.rq import RQ
 from flask.ext.sqlalchemy import SQLAlchemy
 
+
 def generate_key(n):
     return ''.join(choice(ascii_uppercase + digits) for x in range(n))
 
@@ -25,7 +26,8 @@ app = Flask(__name__)
 app.config.from_object('config')
 app.config['SECRET_KEY'] = get_secret_key(app)
 RQ(app)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(app.instance_path, 'app.db')
+uri = 'sqlite:///' + os.path.join(app.instance_path, 'app.db')
+app.config['SQLALCHEMY_DATABASE_URI'] = uri
 db = SQLAlchemy(app)
 
 from app import views, models

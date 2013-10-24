@@ -3,6 +3,7 @@ import feedparser
 from models import Feed
 from app import db
 
+
 @job
 def get_feed(url):
     fp = feedparser.parse(url)
