@@ -47,3 +47,13 @@ class Feed(db.Model):
         """
         self.url = url
         self.title = fp['feed']['title']
+
+
+class Episode(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    feed = db.Column(db.Integer, db.ForeignKey('feed.id'))
+    title = db.Column(db.String)
+
+    def __init__(self, feed, title):
+        self.feed = feed
+        self.title = title

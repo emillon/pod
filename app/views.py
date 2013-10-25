@@ -3,8 +3,8 @@ from app import app, db, lm
 from forms import NewFeedForm, LoginForm, SignupForm
 from tasks import get_feed
 from auth import auth_user
-from flask.ext.login import login_user, logout_user
-from models import User
+from flask.ext.login import login_user, logout_user, login_required
+from models import User, Episode
 
 
 @lm.user_loader
@@ -61,3 +61,10 @@ def signup():
         db.session.commit()
         return redirect(url_for('home'))
     return render_template('signup.html', title='Sign up', form=form)
+
+
+@app.route('/episodes')
+@login_required
+def episodes():
+    episodes = db.session.query(Episode).all()
+    return render_template('episodes.html', episodes=episodes)

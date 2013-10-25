@@ -11,6 +11,12 @@
         <a class="navbar-brand" href="#">Pod</a>
     </div>
     <div class="collapse navbar-collapse navbar-ex1-collapse">
+{% if g.user.is_authenticated() %}
+        <ul class="nav navbar-nav">
+            <li><a href="{{url_for('episodes')}}">Episodes</a></li>
+            <li><a href="{{url_for('new_feed')}}">Add a feed</a></li>
+        </ul>
+{% endif %}
         <ul class="nav navbar-nav navbar-right">
 {% if g.user.is_authenticated() %}
             <li><p class="navbar-text">Signed in as {{g.user.name}}</p></li>
