@@ -6,6 +6,22 @@
       href="{{url_for('static', filename='vendor/bootstrap-3.0.0/css/bootstrap.min.css')}}">
 </head>
 <body>
+<nav class="navbar navbar-default" role="navigation">
+    <div class="navbar-header">
+        <a class="navbar-brand" href="#">Pod</a>
+    </div>
+    <div class="collapse navbar-collapse navbar-ex1-collapse">
+        <ul class="nav navbar-nav navbar-right">
+{% if g.user.is_authenticated() %}
+            <li><p class="navbar-text">Signed in as {{g.user.name}}</p></li>
+            <li><a href="{{url_for('logout')}}">Log out</a></li>
+{% else %}
+            <li><a href="{{url_for('signup')}}">Sign up</a></li>
+            <li><a href="{{url_for('login')}}">Log in</a></li>
+{% endif %}
+        </ul>
+    </div>
+</nav>
 {% with messages = get_flashed_messages() %}
 {% for message in messages %}
     <p class="text-warning">{{ message }}</p>

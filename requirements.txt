@@ -1,6 +1,8 @@
 alembic
+bcrypt
 feedparser
 flask
+flask-login
 flask-rq
 flask-sqlalchemy
 flask-wtf
