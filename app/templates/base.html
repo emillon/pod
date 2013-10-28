@@ -5,13 +5,7 @@
 <link rel="stylesheet" type="text/css" media="screen" charset="utf-8"
       href="{{url_for('static', filename='vendor/bootstrap-3.0.0/css/bootstrap.min.css')}}">
 </head>
-<script src="{{url_for('static', filename='vendor/audiojs/audio.min.js')}}">
-</script>
-<script>
-  audiojs.events.ready(function() {
-    var as = audiojs.createAll();
-  });
-</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <body>
 <nav class="navbar navbar-default" role="navigation">
     <div class="navbar-header">
@@ -41,5 +35,13 @@
 {% endfor %}
 {% endwith %}
 {% block content %}{% endblock %}
+<script src="{{url_for('static', filename='vendor/jquery/jquery-2.0.3.min.js')}}"></script>
+<script src="{{url_for('static', filename='vendor/bootstrap-3.0.0/js/bootstrap.min.js')}}"></script>
+<script src="{{url_for('static', filename='vendor/audiojs/audio.min.js')}}"></script>
+<script>
+  audiojs.events.ready(function() {
+    var as = audiojs.createAll();
+  });
+</script>
 </body>
 </html>
