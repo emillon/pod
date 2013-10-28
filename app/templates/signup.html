@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
+{% include "form_errors.html" %}
 <form method="post">
     {{form.hidden_tag()}}
     <p> <label> Username {{form.username()}} </label> </p>

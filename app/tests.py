@@ -7,6 +7,7 @@ class TestCase(unittest.TestCase):
     def setUp(self):
         app.config['TESTING'] = True
         app.config['CSRF_ENABLED'] = False
+        app.config['WTF_CSRF_ENABLED'] = False
         uri = 'sqlite:///' + os.path.join(app.instance_path, 'test.db')
         app.config['SQLALCHEMY_DATABASE_URI'] = uri
         self.app = app.test_client()
@@ -19,3 +20,33 @@ class TestCase(unittest.TestCase):
     def test_home(self):
         r = self.app.get('/')
         self.assertIn('Hello', r.data)
+
+    def signup(self, username, password):
+        return self.app.post('/signup', data=dict(
+                username=username,
+                password=password,
+                confirm=password
+            ), follow_redirects=True)
+
+    def login(self, username, password):
+        return self.app.post('/login', data=dict(
+                username=username,
+                password=password
+            ), follow_redirects=True)
+
+    def logout(self):
+        return self.app.get('/logout', follow_redirects=True)
+
+    def test_signup_login_logout(self):
+        r = self.app.get('/')
+        self.assertIn('Log in', r.data)
+        self.assertNotIn('Log out', r.data)
+        r = self.signup('a', 'a')
+        self.assertIn('User successfully created', r.data)
+        r = self.login('a', 'a')
+        self.assertIn('Signed in as a', r.data)
+        self.assertNotIn('Log in', r.data)
+        self.assertIn('Log out', r.data)
+        r = self.logout()
+        self.assertIn('Log in', r.data)
+        self.assertNotIn('Log out', r.data)
