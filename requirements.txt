@@ -1,8 +1,10 @@
 alembic
 bcrypt
+coverage
 feedparser
 flask
 flask-login
 flask-rq
 flask-sqlalchemy
 flask-wtf
+nose

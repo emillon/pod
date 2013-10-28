@@ -1,3 +1,4 @@
 *.pyc
-instance/app.db
+instance/*.db
 instance/secret.key
+.coverage
