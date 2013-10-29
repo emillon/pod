@@ -65,7 +65,9 @@ class User(db.Model):
 class Feed(db.Model):
     """
     A RSS Feed.
-    When adding one, subsequent episodes must be fetched through tasks.get_feed.
+
+    When adding a Feed, subsequent Episodes must be fetched
+    through the get_feed task.
     """
     id = db.Column(db.Integer, primary_key=True)
     url = db.Column(db.String, unique=True, nullable=False)
