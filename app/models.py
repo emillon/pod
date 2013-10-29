@@ -17,10 +17,6 @@ class User(db.Model):
         salt = bcrypt.gensalt(workfactor)
         self.password = bcrypt.hashpw(password.encode('utf-8'), salt)
 
-    @staticmethod
-    def by_name(name):
-        return db.session.query(User).filter_by(name=name).first()
-
     def is_active(self):
         return True
 
