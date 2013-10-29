@@ -8,9 +8,10 @@ def find_enclosure(entry):
     """
     entry is a feedparser entry (one element of fp['entries'])
     """
-    for l in entry['links']:
-        if l['rel'] == 'enclosure':
-            return l['href']
+    if 'links' in entry:
+        for l in entry['links']:
+            if l['rel'] == 'enclosure':
+                return l['href']
     return None
 
 

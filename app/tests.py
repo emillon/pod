@@ -82,6 +82,7 @@ class TestCase(unittest.TestCase):
                                           'audio/mpeg'
                                           )
             ) for n in [1, 2, 3]]
+        items.append(PyRSS2Gen.RSSItem(title='Not an episode'))
         rss = PyRSS2Gen.RSS2('title', 'link', 'description', items=items)
         httpretty.register_uri(httpretty.GET, url, body=rss.to_xml())
         r = self.app.post('/new',
