@@ -2,6 +2,8 @@ import os
 import unittest
 
 from app import app, db
+from key import get_secret_key
+
 
 class TestCase(unittest.TestCase):
     def setUp(self):
@@ -10,12 +12,15 @@ class TestCase(unittest.TestCase):
         app.config['WTF_CSRF_ENABLED'] = False
         uri = 'sqlite:///' + os.path.join(app.instance_path, 'test.db')
         app.config['SQLALCHEMY_DATABASE_URI'] = uri
+        self.key_file = os.path.join(app.instance_path, 'secret-test.key')
+        app.config['SECRET_KEY'] = get_secret_key(self.key_file)
         self.app = app.test_client()
         db.create_all()
 
     def tearDown(self):
         db.session.remove()
         db.drop_all()
+        os.remove(self.key_file)
 
     def test_home(self):
         r = self.app.get('/')
