@@ -14,7 +14,7 @@
     <div class="collapse navbar-collapse navbar-ex1-collapse">
 {% if g.user.is_authenticated() %}
         <ul class="nav navbar-nav">
-{% if g.user.is_authenticated() %}
+{% if g.user.is_admin() %}
             <li><a href="/admin">Admin panel</a></li>
 {% endif %}
             <li><a href="{{url_for('episodes')}}">Episodes</a></li>
