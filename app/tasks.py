@@ -1,7 +1,7 @@
-from flask.ext.rq import job
 import feedparser
 from models import Feed, Episode
 from app import db
+from utils import job
 
 
 def find_enclosure(entry):

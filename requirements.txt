@@ -7,4 +7,6 @@ flask-login
 flask-rq
 flask-sqlalchemy
 flask-wtf
+httpretty
 nose
+pyrss2gen

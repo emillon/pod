@@ -1,5 +1,7 @@
+import httpretty
 import os
 import unittest
+import PyRSS2Gen
 
 from app import app, db
 from key import get_secret_key
@@ -10,10 +12,13 @@ class TestCase(unittest.TestCase):
         app.config['TESTING'] = True
         app.config['CSRF_ENABLED'] = False
         app.config['WTF_CSRF_ENABLED'] = False
+
         uri = 'sqlite:///' + os.path.join(app.instance_path, 'test.db')
         app.config['SQLALCHEMY_DATABASE_URI'] = uri
+
         self.key_file = os.path.join(app.instance_path, 'secret-test.key')
         app.config['SECRET_KEY'] = get_secret_key(self.key_file)
+
         self.app = app.test_client()
         db.create_all()
 
@@ -64,3 +69,15 @@ class TestCase(unittest.TestCase):
         self.signup('a', 'a')
         r = self.login('a', 'b')
         self.assertIn('Bad login or password', r.data)
+
+    @httpretty.activate
+    def test_add_podcast(self):
+        self.signup('a', 'a')
+        self.login('a', 'a')
+        url = 'http://example.com/podcast.rss'
+        rss = PyRSS2Gen.RSS2('title', 'link', 'description')
+        httpretty.register_uri(httpretty.GET, url, body=rss.to_xml())
+        r = self.app.post('/new',
+                          data={'podcast_url': url},
+                          follow_redirects=True)
+        self.assertIn('Adding podcast : ' + url, r.data)
