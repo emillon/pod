@@ -3,6 +3,7 @@ bcrypt
 coverage
 feedparser
 flask
+flask-admin
 flask-login
 flask-rq
 flask-sqlalchemy

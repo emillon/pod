@@ -29,6 +29,9 @@ class User(db.Model):
     def get_id(self):
         return unicode(self.id)
 
+    def is_admin(self):
+        return (self.role == ROLE_ADMIN)
+
 
 class Feed(db.Model):
     id = db.Column(db.Integer, primary_key=True)
