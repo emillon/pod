@@ -67,5 +67,5 @@ def signup():
 @app.route('/episodes')
 @login_required
 def episodes():
-    episodes = db.session.query(Episode).all()
+    episodes = db.session.query(Episode).filter(Episode.enclosure != None)
     return render_template('episodes.html', episodes=episodes)

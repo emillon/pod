@@ -93,3 +93,4 @@ class TestCase(unittest.TestCase):
         self.assertIn('Episode 1', r.data)
         self.assertIn('Episode 2', r.data)
         self.assertIn('Episode 3', r.data)
+        self.assertNotIn('Not an episode', r.data)
