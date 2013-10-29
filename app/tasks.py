@@ -4,8 +4,33 @@ Tasks ran asynchronously through RQ
 
 import feedparser
 from app.models import Feed, Episode
-from app import db
-from app.utils import job
+from app import app, db
+from flask.ext.rq import job as _job
+
+
+class RQJob(object):
+    """
+    Work around some flask-rq limitations.
+    If we're testing, we don't want to hit redis.
+    """
+    def __init__(self, func):
+        self.func = func
+
+    def delay(self, *args, **kwargs):
+        """
+        Call self.func, async or sync.
+        """
+        if app.config['TESTING']:
+            return self.func(*args, **kwargs)
+        else:
+            return _job(self.func).delay(*args, **kwargs)
+
+
+def job(func):
+    """
+    Redefinition of job decorator from flask-rq.
+    """
+    return RQJob(func)
 
 
 def find_enclosure(entry):
