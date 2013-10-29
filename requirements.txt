@@ -10,4 +10,5 @@ flask-sqlalchemy
 flask-wtf
 httpretty
 nose
+psycopg2
 pyrss2gen

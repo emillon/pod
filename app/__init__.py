@@ -19,7 +19,7 @@ app.config['SECRET_KEY'] = get_secret_key(key_file)
 RQ(app)
 
 # SQLAlchemy
-uri = 'sqlite:///' + os.path.join(app.instance_path, 'app.db')
+uri = 'postgresql+psycopg2://pod@/pod?host=/tmp'
 app.config['SQLALCHEMY_DATABASE_URI'] = uri
 db = SQLAlchemy(app)
 
