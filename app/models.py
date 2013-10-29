@@ -8,9 +8,9 @@ ROLE_ADMIN = 1
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String, unique=True)
-    password = db.Column(db.String)
-    role = db.Column(db.SmallInteger, default=ROLE_USER)
+    name = db.Column(db.String, unique=True, nullable=False)
+    password = db.Column(db.String, nullable=False)
+    role = db.Column(db.SmallInteger, default=ROLE_USER, nullable=False)
 
     def __init__(self, login, password, workfactor=12):
         self.name = login
@@ -35,8 +35,8 @@ class User(db.Model):
 
 class Feed(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    url = db.Column(db.String, unique=True)
-    title = db.Column(db.String)
+    url = db.Column(db.String, unique=True, nullable=False)
+    title = db.Column(db.String, nullable=False)
 
     def __init__(self, url, fp):
         """
@@ -50,9 +50,9 @@ class Feed(db.Model):
 
 class Episode(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    feed = db.Column(db.Integer, db.ForeignKey('feed.id'))
-    title = db.Column(db.String)
-    enclosure = db.Column(db.String)
+    feed = db.Column(db.Integer, db.ForeignKey('feed.id'), nullable=False)
+    title = db.Column(db.String, nullable=False)
+    enclosure = db.Column(db.String, nullable=True)
 
     def __init__(self, feed, title, enclosure):
         self.feed = feed
