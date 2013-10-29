@@ -1,10 +1,12 @@
 from flask import render_template, flash, redirect, url_for, request
 from app import app, db, lm
-from forms import NewFeedForm, LoginForm, SignupForm
+from flask.ext.wtf import Form
 from tasks import get_feed
 from auth import auth_user
 from flask.ext.login import login_user, logout_user, login_required
 from models import User, Episode
+from wtforms import TextField, PasswordField
+from wtforms.validators import Required, EqualTo
 
 
 @lm.user_loader
@@ -17,6 +19,10 @@ def home():
     return render_template('home.html')
 
 
+class NewFeedForm(Form):
+    podcast_url = TextField(validators=[Required()])
+
+
 @app.route('/new', methods=['GET', 'POST'])
 def new_feed():
     form = NewFeedForm()
@@ -26,6 +32,11 @@ def new_feed():
         get_feed.delay(url)
         return redirect(url_for('home'))
     return render_template('new_feed.html', title='New feed', form=form)
+
+
+class LoginForm(Form):
+    username = TextField(validators=[Required()])
+    password = PasswordField(validators=[Required()])
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -48,6 +59,14 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('home'))
+
+
+class SignupForm(Form):
+    username = TextField(validators=[Required()])
+    password = PasswordField(
+        validators=[Required(),
+                    EqualTo('confirm', message='Passwords must match')])
+    confirm = PasswordField(validators=[Required()])
 
 
 @app.route('/signup', methods=['GET', 'POST'])
