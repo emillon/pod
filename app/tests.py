@@ -28,15 +28,15 @@ class TestCase(unittest.TestCase):
 
     def signup(self, username, password):
         return self.app.post('/signup', data=dict(
-                username=username,
-                password=password,
-                confirm=password
+            username=username,
+            password=password,
+            confirm=password
             ), follow_redirects=True)
 
     def login(self, username, password):
         return self.app.post('/login', data=dict(
-                username=username,
-                password=password
+            username=username,
+            password=password
             ), follow_redirects=True)
 
     def logout(self):
