@@ -75,9 +75,20 @@ class TestCase(unittest.TestCase):
         self.signup('a', 'a')
         self.login('a', 'a')
         url = 'http://example.com/podcast.rss'
-        rss = PyRSS2Gen.RSS2('title', 'link', 'description')
+        items = [PyRSS2Gen.RSSItem(
+            title='Episode %d' % n,
+            enclosure=PyRSS2Gen.Enclosure('http://example.com/%d.mp3' % n,
+                                          42,
+                                          'audio/mpeg'
+                                          )
+            ) for n in [1, 2, 3]]
+        rss = PyRSS2Gen.RSS2('title', 'link', 'description', items=items)
         httpretty.register_uri(httpretty.GET, url, body=rss.to_xml())
         r = self.app.post('/new',
                           data={'podcast_url': url},
                           follow_redirects=True)
         self.assertIn('Adding podcast : ' + url, r.data)
+        r = self.app.get('/episodes')
+        self.assertIn('Episode 1', r.data)
+        self.assertIn('Episode 2', r.data)
+        self.assertIn('Episode 3', r.data)
