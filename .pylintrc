@@ -1,0 +1,6 @@
+[MESSAGES CONTROL]
+disable=import-error,no-name-in-module,no-member,no-init,too-few-public-methods
+
+[REPORTS]
+reports=no
+
