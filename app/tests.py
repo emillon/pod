@@ -50,3 +50,12 @@ class TestCase(unittest.TestCase):
         r = self.logout()
         self.assertIn('Log in', r.data)
         self.assertNotIn('Log out', r.data)
+
+    def test_login_nonexistent(self):
+        r = self.login('doesnt', 'exist')
+        self.assertIn('Bad login or password', r.data)
+
+    def test_login_bad_pass(self):
+        self.signup('a', 'a')
+        r = self.login('a', 'b')
+        self.assertIn('Bad login or password', r.data)
