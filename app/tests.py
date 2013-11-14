@@ -108,4 +108,8 @@ class TestCase(unittest.TestCase):
         r = self.login('admin', 'admin')
         self.assertIn('Admin panel', r.data)
         r = self.app.get('/admin', follow_redirects=True)
-        self.assertEqual(r.status_code, 200)
+        self.assertIn('Episode', r.data)
+
+    def test_admin_denied(self):
+        r = self.app.get('/admin', follow_redirects=True)
+        self.assertNotIn('Episode', r.data)
