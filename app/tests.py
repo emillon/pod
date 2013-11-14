@@ -5,6 +5,7 @@ import PyRSS2Gen
 
 from app import app, db
 from key import get_secret_key
+import models
 
 
 class TestCase(unittest.TestCase):
@@ -96,3 +97,15 @@ class TestCase(unittest.TestCase):
         self.assertIn('Episode 2', r.data)
         self.assertIn('Episode 3', r.data)
         self.assertNotIn('Not an episode', r.data)
+
+    def test_admin(self):
+        r = self.signup('admin', 'admin')
+        db.session.execute('UPDATE user SET role=:r WHERE name=:n',
+                           {'r': models.ROLE_ADMIN,
+                            'n': 'admin'
+                            })
+        db.session.commit()
+        r = self.login('admin', 'admin')
+        self.assertIn('Admin panel', r.data)
+        r = self.app.get('/admin', follow_redirects=True)
+        self.assertEqual(r.status_code, 200)
