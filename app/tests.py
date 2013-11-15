@@ -39,7 +39,9 @@ class TestCase(unittest.TestCase):
             confirm=password
             ), follow_redirects=True)
 
-    def login(self, username, password):
+    def login(self, username, password, signup=False):
+        if signup:
+            self.signup(username, password)
         return self.app.post('/login', data=dict(
             username=username,
             password=password
@@ -75,8 +77,7 @@ class TestCase(unittest.TestCase):
 
     @httpretty.activate
     def test_add_podcast(self):
-        self.signup('a', 'a')
-        self.login('a', 'a')
+        self.login('a', 'a', signup=True)
         url = 'http://example.com/podcast.rss'
         items = [PyRSS2Gen.RSSItem(
             title='Episode %d' % n,
