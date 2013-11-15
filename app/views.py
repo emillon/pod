@@ -5,7 +5,7 @@ All views.
 from app import app, db, lm
 from app.auth import auth_user
 from app.tasks import get_feed
-from app.models import User, Episode
+from app.models import User, Episode, Feed
 from flask import render_template, flash, redirect, url_for, request
 from flask.ext.wtf import Form
 from flask.ext.login import login_user, logout_user, login_required
@@ -44,8 +44,11 @@ def new_feed():
     form = NewFeedForm()
     if form.validate_on_submit():
         url = form.podcast_url.data
-        flash('Adding podcast : ' + url)
-        get_feed.delay(url)
+        if Feed.get_by_url(url) is not None:
+            flash('This podcast already exists')
+        else:
+            flash('Adding podcast : ' + url)
+            get_feed.delay(url)
         return redirect(url_for('home'))
     return render_template('new_feed.html', title='New feed', form=form)
 

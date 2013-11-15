@@ -50,6 +50,25 @@ class TestCase(unittest.TestCase):
     def logout(self):
         return self.app.get('/logout', follow_redirects=True)
 
+    def setup_podcast(self, url):
+        self.assertTrue(httpretty.is_enabled())
+        items = [PyRSS2Gen.RSSItem(
+            title='Episode %d' % n,
+            enclosure=PyRSS2Gen.Enclosure('http://example.com/%d.mp3' % n,
+                                          42,
+                                          'audio/mpeg'
+                                          )
+            ) for n in [1, 2, 3]]
+        items.append(PyRSS2Gen.RSSItem(title='Not an episode'))
+        rss = PyRSS2Gen.RSS2('title', 'link', 'description', items=items)
+        httpretty.register_uri(httpretty.GET, url, body=rss.to_xml())
+
+    def add_podcast(self, url):
+        r = self.app.post('/new',
+                          data={'podcast_url': url},
+                          follow_redirects=True)
+        return r
+
     def test_signup_login_logout(self):
         r = self.app.get('/')
         self.assertIn('Log in', r.data)
@@ -79,25 +98,23 @@ class TestCase(unittest.TestCase):
     def test_add_podcast(self):
         self.login('a', 'a', signup=True)
         url = 'http://example.com/podcast.rss'
-        items = [PyRSS2Gen.RSSItem(
-            title='Episode %d' % n,
-            enclosure=PyRSS2Gen.Enclosure('http://example.com/%d.mp3' % n,
-                                          42,
-                                          'audio/mpeg'
-                                          )
-            ) for n in [1, 2, 3]]
-        items.append(PyRSS2Gen.RSSItem(title='Not an episode'))
-        rss = PyRSS2Gen.RSS2('title', 'link', 'description', items=items)
-        httpretty.register_uri(httpretty.GET, url, body=rss.to_xml())
-        r = self.app.post('/new',
-                          data={'podcast_url': url},
-                          follow_redirects=True)
+        self.setup_podcast(url)
+        r = self.add_podcast(url)
         self.assertIn('Adding podcast : ' + url, r.data)
         r = self.app.get('/episodes')
         self.assertIn('Episode 1', r.data)
         self.assertIn('Episode 2', r.data)
         self.assertIn('Episode 3', r.data)
         self.assertNotIn('Not an episode', r.data)
+
+    @httpretty.activate
+    def test_add_podcast_twice(self):
+        self.login('a', 'a', signup=True)
+        url = 'http://example.com/podcast.rss'
+        self.setup_podcast(url)
+        self.add_podcast(url)
+        r = self.add_podcast(url)
+        self.assertIn('This podcast already exists', r.data)
 
     def test_admin(self):
         r = self.signup('admin', 'admin')

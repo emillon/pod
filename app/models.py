@@ -82,6 +82,10 @@ class Feed(db.Model):
         self.url = url
         self.title = feed['feed']['title']
 
+    @classmethod
+    def get_by_url(cls, url):
+        return cls.query.filter_by(url=url).first()
+
 
 class Episode(db.Model):
     """
