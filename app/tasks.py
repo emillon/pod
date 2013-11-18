@@ -3,7 +3,7 @@ Tasks ran asynchronously through RQ
 """
 
 import feedparser
-from app.models import Feed, Episode
+from app.models import Feed, Episode, Subscription
 from app import app, db
 from flask.ext.rq import get_queue
 
@@ -42,11 +42,15 @@ def find_enclosure(entry):
 
 
 @job
-def get_feed(url):
+def get_feed(url, and_subscribe=None):
     """
       - download a RSS url
       - make a Feed entry for it
       - populate corresponding Episodes
+
+    kwargs
+
+    and_subscribe: if not None, the specified userid gets subscribed to it.
     """
     feedp = feedparser.parse(url)
     feed = Feed(url, feedp)
@@ -57,4 +61,8 @@ def get_feed(url):
         enclosure = find_enclosure(entry)
         episode = Episode(feed.id, title, enclosure)
         db.session.add(episode)
+    if and_subscribe is not None:
+        userid = and_subscribe
+        sub = Subscription(feed.id, userid)
+        db.session.add(sub)
     db.session.commit()

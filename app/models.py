@@ -102,3 +102,16 @@ class Episode(db.Model):
         self.feed = feed
         self.title = title
         self.enclosure = enclosure
+
+
+class Subscription(db.Model):
+    """
+    Subscription between a User and a Feed.
+    """
+    id = db.Column(db.Integer, primary_key=True)
+    feed = db.Column(db.Integer, db.ForeignKey('feed.id'), nullable=False)
+    user = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+    def __init__(self, feed, user):
+        self.feed = feed
+        self.user = user

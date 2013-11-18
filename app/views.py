@@ -5,10 +5,11 @@ All views.
 from app import app, db, lm
 from app.auth import auth_user
 from app.tasks import get_feed
-from app.models import User, Episode, Feed
+from app.models import User, Episode, Feed, Subscription
 from flask import render_template, flash, redirect, url_for, request
 from flask.ext.wtf import Form
-from flask.ext.login import login_user, logout_user, login_required
+from flask.ext.login import login_user, logout_user
+from flask.ext.login import login_required, current_user
 from wtforms import TextField, PasswordField
 from wtforms.validators import Required, EqualTo
 
@@ -48,7 +49,7 @@ def new_feed():
             flash('This podcast already exists')
         else:
             flash('Adding podcast : ' + url)
-            get_feed.delay(url)
+            get_feed.delay(url, and_subscribe=current_user.id)
         return redirect(url_for('home'))
     return render_template('new_feed.html', title='New feed', form=form)
 
@@ -123,5 +124,10 @@ def episodes():
     """
     Display all episodes
     """
-    eps = db.session.query(Episode).filter(Episode.enclosure != None)
+    eps = db.session\
+            .query(Episode)\
+            .join(Feed)\
+            .join(Subscription)\
+            .filter(Subscription.user == current_user.id)\
+            .filter(Episode.enclosure != None)
     return render_template('episodes.html', episodes=eps)

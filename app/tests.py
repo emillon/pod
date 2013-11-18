@@ -51,7 +51,7 @@ class TestCase(unittest.TestCase):
         return self.app.get('/logout', follow_redirects=True)
 
     def setup_podcast(self, url):
-        self.assertTrue(httpretty.is_enabled())
+        assert httpretty.is_enabled()
         items = [PyRSS2Gen.RSSItem(
             title='Episode %d' % n,
             enclosure=PyRSS2Gen.Enclosure('http://example.com/%d.mp3' % n,
@@ -63,7 +63,9 @@ class TestCase(unittest.TestCase):
         rss = PyRSS2Gen.RSS2('title', 'link', 'description', items=items)
         httpretty.register_uri(httpretty.GET, url, body=rss.to_xml())
 
-    def add_podcast(self, url):
+    def add_podcast(self, url, with_setup=False):
+        if with_setup:
+            self.setup_podcast(url)
         r = self.app.post('/new',
                           data={'podcast_url': url},
                           follow_redirects=True)
@@ -131,3 +133,13 @@ class TestCase(unittest.TestCase):
     def test_admin_denied(self):
         r = self.app.get('/admin', follow_redirects=True)
         self.assertNotIn('Episode', r.data)
+
+    @httpretty.activate
+    def test_episode_other_user(self):
+        self.login('a', 'a', signup=True)
+        url = 'http://example.com/podcast.rss'
+        self.add_podcast(url, with_setup=True)
+        self.logout()
+        self.login('b', 'b', signup=True)
+        r = self.app.get('/episodes')
+        self.assertNotIn('Episode 1', r.data)
