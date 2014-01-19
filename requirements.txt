@@ -9,6 +9,7 @@ flask-rq
 flask-sqlalchemy
 flask-wtf
 httpretty
+hy
 nose
 psycopg2
 pyrss2gen
