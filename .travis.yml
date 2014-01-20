@@ -4,7 +4,7 @@ install:
   - "pip install coveralls --use-mirrors"
 python:
   - "2.7"
-before_script: "find . -name '*.hy' -exec hyc {} \;"
+before_script: "find . -name '*.hy' -exec hyc {} \\;"
 script: "nosetests --with-coverage --cover-package=app"
 after_success:
   coveralls
